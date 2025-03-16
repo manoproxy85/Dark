@@ -1,1 +1,129 @@
-local g,s,b,k=game,Instance.new,Color3.fromRGB,task.wait local ui=s("ScreenGui")ui.Parent=g:GetService("CoreGui")local f=s("Frame")f.Parent=ui f.BackgroundColor3=s(0,0,0)f.Size=UDim2.new(0,300,0,300)f.Position=UDim2.new(0.5,-150,0.5,-150)f.Active=true f.Draggable=true local l=s("TextLabel")l.Parent=f l.BackgroundTransparency=1 l.Size=UDim2.new(1,0,0,50)l.Text="Kill couch brookhaven"l.TextColor3=s(255,255,255)l.Font=Enum.Font.SourceSansBold l.TextSize=24 local wf=s("Frame")wf.Parent=f wf.BackgroundColor3=s(255,255,255)wf.Size=UDim2.new(1,-20,0,150)wf.Position=UDim2.new(0,10,0,60)local tb=s("TextBox")tb.Parent=wf tb.PlaceholderText="Digite o nome do jogador"tb.Font=Enum.Font.SourceSans tb.TextSize=20 tb.Size=UDim2.new(1,-20,1,-20)tb.Position=UDim2.new(0,10,0,10)tb.TextColor3=s(0,0,0)tb.BackgroundColor3=s(255,255,255)local kb=s("TextButton")kb.Parent=f kb.Text="Kill"kb.Font=Enum.Font.SourceSansBold kb.TextSize=28 kb.Size=UDim2.new(1,-20,0,50)kb.Position=UDim2.new(0,10,0,220)kb.BackgroundColor3=s(255,0,0)kb.TextColor3=s(0,0,0)kb.MouseButton1Click:Connect(function()local n,t=tb.Text,nil for _,p in pairs(g.Players:GetPlayers())do if p.Name:lower():find(n:lower())then t=p break end end if not t then kb.Text="Jogador não encontrado"s(1)kb.Text="Kill"return end local c,p,o=g.Players.LocalPlayer.Character,nil,nil if c and c:FindFirstChild("HumanoidRootPart")then o=c.HumanoidRootPart.Position local h=c:FindFirstChildOfClass("Humanoid")s(1)if h then h.PlatformStand=false end g:GetService("ReplicatedStorage").RE:FindFirstChild("1Too1l"):InvokeServer("PickingTools","Couch")local b=g.Players.LocalPlayer:FindFirstChild("Backpack")if b then p=b:FindFirstChild("Couch")if p and p:IsA("Tool")then p.Parent=c end end s(1)task.spawn(function()local st=tick()while true do s(0.1)local tp=g.Players:FindFirstChild(t.Name)if tp and tp.Character and tp.Character:FindFirstChild("HumanoidRootPart")then c:SetPrimaryPartCFrame(CFrame.new(tp.Character.HumanoidRootPart.Position-Vector3.new(0,5,0)))end if tick()-st>=1 then break end end c:SetPrimaryPartCFrame(CFrame.new(-12678,-74,-4185))s(1)g:GetService("ReplicatedStorage").RE:FindFirstChild("1Clea1rTool1s"):FireServer("ClearAllTools")c:SetPrimaryPartCFrame(CFrame.new(o))end)end end)
+local ScreenGui = Instance.new("ScreenGui")
+local MainFrame = Instance.new("Frame")
+local TitleLabel = Instance.new("TextLabel")
+local WhiteFrame = Instance.new("Frame")
+local TextBox = Instance.new("TextBox")
+local KillButton = Instance.new("TextButton")
+
+ScreenGui.Parent = game:GetService("CoreGui")
+
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+MainFrame.Size = UDim2.new(0, 300, 0, 300)
+MainFrame.Position = UDim2.new(0.5, -150, 0.5, -150)
+MainFrame.Active = true
+MainFrame.Draggable = true
+
+TitleLabel.Parent = MainFrame
+TitleLabel.BackgroundTransparency = 1
+TitleLabel.Size = UDim2.new(1, 0, 0, 50)
+TitleLabel.Position = UDim2.new(0, 0, 0, 0)
+TitleLabel.Text = "Kill couch brookhaven"
+TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TitleLabel.Font = Enum.Font.SourceSansBold
+TitleLabel.TextSize = 24
+
+WhiteFrame.Parent = MainFrame
+WhiteFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+WhiteFrame.Size = UDim2.new(1, -20, 0, 150)
+WhiteFrame.Position = UDim2.new(0, 10, 0, 60)
+
+TextBox.Parent = WhiteFrame
+TextBox.PlaceholderText = "Digite o nome do jogador"
+TextBox.Font = Enum.Font.SourceSans
+TextBox.TextSize = 20
+TextBox.Size = UDim2.new(1, -20, 1, -20)
+TextBox.Position = UDim2.new(0, 10, 0, 10)
+TextBox.TextColor3 = Color3.fromRGB(0, 0, 0)
+TextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+
+KillButton.Parent = MainFrame
+KillButton.Text = "Kill"
+KillButton.Font = Enum.Font.SourceSansBold
+KillButton.TextSize = 28
+KillButton.Size = UDim2.new(1, -20, 0, 50)
+KillButton.Position = UDim2.new(0, 10, 0, 220)
+KillButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+KillButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+
+local function findPlayerByPartialName(partialName)
+    partialName = partialName:lower()
+    for _, player in pairs(game.Players:GetPlayers()) do
+        if player.Name:lower():find(partialName) then
+            return player
+        end
+    end
+    return nil
+end
+
+KillButton.MouseButton1Click:Connect(function()
+    local inputName = TextBox.Text
+    local targetPlayerObj = findPlayerByPartialName(inputName)
+
+    if not targetPlayerObj then
+        KillButton.Text = "Jogador não encontrado"
+        task.wait(1)
+        KillButton.Text = "Kill"
+        return
+    end
+
+    local TargetPlayer = targetPlayerObj.Name
+    teleportLoop = true
+    local previousPosition
+
+    local player = game.Players.LocalPlayer
+    local char = player.Character
+
+    if char and char:FindFirstChild("HumanoidRootPart") then
+        previousPosition = char.HumanoidRootPart.Position
+        local humanoid = char:FindFirstChildOfClass("Humanoid")
+        task.wait(1)
+
+        if humanoid then
+            humanoid.PlatformStand = false
+        end
+
+        local args = {
+            [1] = "PickingTools",
+            [2] = "Couch"
+        }
+        game:GetService("ReplicatedStorage").RE:FindFirstChild("1Too1l"):InvokeServer(unpack(args))
+
+        local backpack = player:FindFirstChild("Backpack")
+        if backpack then
+            local couch = backpack:FindFirstChild("Couch")
+            if couch and couch:IsA("Tool") then
+                couch.Parent = char
+            end
+        end
+
+        task.wait(1)
+
+        task.spawn(function()
+            local startTime = tick()
+
+            while teleportLoop do
+                task.wait(0.1)
+                local target = game.Players:FindFirstChild(TargetPlayer)
+                if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+                    local targetPosition = target.Character.HumanoidRootPart.Position
+                    local newPosition = Vector3.new(targetPosition.X, targetPosition.Y - 5, targetPosition.Z)
+                    char:SetPrimaryPartCFrame(CFrame.new(newPosition))
+                end
+
+                if tick() - startTime >= 1 then
+                    teleportLoop = false
+                end
+            end
+
+            char:SetPrimaryPartCFrame(CFrame.new(-12678, -74, -4185))
+            task.wait(1)
+
+            local args = {
+                [1] = "ClearAllTools"
+            }
+            game:GetService("ReplicatedStorage").RE:FindFirstChild("1Clea1rTool1s"):FireServer(unpack(args))
+            char:SetPrimaryPartCFrame(CFrame.new(previousPosition))
+        end)
+    end
+end)
